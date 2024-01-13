@@ -138,6 +138,21 @@ app.post('/coments', verificarToken, (req, res) => {
   });
 });
 
+app.get('/buscarcoments', (req, res) => {
+  // Buscar os últimos 3 comentários do banco de dados
+  const buscarComentariosQuery = 'SELECT * FROM coments ORDER BY id DESC LIMIT 3';
+  
+  connection.query(buscarComentariosQuery, (err, resultados) => {
+    if (err) {
+      console.error('Erro ao buscar comentários:', err);
+      return res.status(500).json({ mensagem: 'Erro interno do servidor ao buscar comentários.', error: err.message });
+    }
+
+    res.json({ mensagem: 'Comentários recuperados com sucesso!', comentarios: resultados });
+  });
+});
+
+
 
 app.post('/recuperar-senha', (req, res) => {
   const { email } = req.body;
