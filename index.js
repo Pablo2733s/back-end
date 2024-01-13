@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 const dbConfig = {
   host: 'viaduct.proxy.rlwy.net',
   user: 'root',
-  password: 'hch2DgbAfd4CaCd26GddeCeFe4Gf5DDh',
+  password: 'eHg54Bbgb2hg1EC33A5adE1663DA-HF4',
   database: 'teste',
-  port: 56285
+  port: 42825
 };
 
 const connection = mysql.createConnection(dbConfig);
