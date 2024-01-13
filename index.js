@@ -89,43 +89,6 @@ app.post('/inserir', (req, res) => {
   });
 });
 
-app.post('/action', (req, res) => {
-    const { productId, action } = req.body;
-
-    // Verificar se o ID do produto e a ação são fornecidos
-    if (!productId || !action) {
-        return res.status(400).json({ mensagem: 'ID do produto e ação são necessários.' });
-    }
-
-    // Lógica para salvar a ação no banco de dados (por exemplo, tabela 'carrinho')
-    const salvarAcaoQuery = 'INSERT INTO carrinho (id_produto, acao) VALUES (?, ?)';
-    connection.query(salvarAcaoQuery, [productId, action], (err, resultado) => {
-        if (err) {
-            console.error('Erro ao salvar ação:', err);
-            return res.status(500).json({ mensagem: 'Erro interno do servidor ao salvar ação.', error: err.message });
-        }
-
-        res.json({ mensagem: `Ação ${action} para o produto ${productId} salva com sucesso!`, id: resultado.insertId });
-    });
-});
-
-app.post('/adicionar', verificarToken, (req, res) => {
-  const { product_name, descricao, image_url } = req.body;
-
-  if (!product_name || !descricao || !image_url) {
-    return res.status(400).json({ mensagem: 'Informe product_name, descricao e image_url para adicionar um produto.' });
-  }
-
-  const adicionarProdutoQuery = 'INSERT INTO teste.products (product_name, descricao, image_url) VALUES (?, ?, ?)';
-  connection.query(adicionarProdutoQuery, [product_name, descricao, image_url], (err, resultado) => {
-    if (err) {
-      console.error('Erro ao adicionar produto:', err);
-      return res.status(500).json({ mensagem: 'Erro interno do servidor ao adicionar produto.', error: err.message });
-    }
-
-    res.json({ mensagem: 'Produto adicionado com sucesso!', id: resultado.insertId });
-  });
-});
 
 app.post('/login', (req, res) => {
   const { identificador, senha } = req.body;
@@ -150,15 +113,14 @@ app.post('/login', (req, res) => {
     // Comparar o hash da combinação de email e senha armazenado no banco de dados (removido o uso do bcrypt)
 
     // Gerar token JWT
-    const token = jwt.sign({ id: usuarioAutenticado.id, email: usuarioAutenticado.email }, segredoJWT, { expiresIn: '1h' });
+    const token = jwt.sign({ id: usuarioAutenticado.id, email: usuarioAutenticado.email }, segredoJWT, { expiresIn: '7d' });
 
     res.json({ mensagem: 'Login realizado com sucesso!', token });
   });
 });
+
 app.post('/coments', verificarToken, (req, res) => {
   const { comentario, avaliacao } = req.body;
-
-  // Certifique-se de que user_id está disponível no corpo da solicitação (depois de verificar o token)
   const user_id = req.usuario.id;
 
   if (!comentario || !avaliacao || !user_id) {
@@ -175,6 +137,7 @@ app.post('/coments', verificarToken, (req, res) => {
     res.json({ mensagem: 'Comentário adicionado com sucesso!', id: resultado.insertId });
   });
 });
+
 
 app.post('/recuperar-senha', (req, res) => {
   const { email } = req.body;
