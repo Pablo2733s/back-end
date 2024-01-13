@@ -157,8 +157,6 @@ app.post('/login', (req, res) => {
 });
 app.post('/coments', verificarToken, (req, res) => {
   const { comentario, avaliacao } = req.body;
-
-  // Certifique-se de que user_id está disponível no corpo da solicitação (depois de verificar o token)
   const user_id = req.usuario.id;
 
   if (!comentario || !avaliacao || !user_id) {
