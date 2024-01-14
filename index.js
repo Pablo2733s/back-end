@@ -13,11 +13,11 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const dbConfig = {
-  host: 'viaduct.proxy.rlwy.net',
+  host: 'monorail.proxy.rlwy.net',
   user: 'root',
-  password: 'eHg54Bbgb2hg1EC33A5adE1663DA-HF4',
+  password: 'DED-EaaFH24H3b31Dcebacba2Df-BhEb',
   database: 'teste',
-  port: 42825
+  port: 50226
 };
 
 const connection = mysql.createConnection(dbConfig);
