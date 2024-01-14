@@ -236,6 +236,38 @@ app.post('/alterar', verificarToken, (req, res) => {
   });
 });
 
+app.post('/comprar', verificarToken, (req, res) => {
+  // Lógica para calcular e exibir o valor total da compra
+  var totalAmount = 0;
+  cartItems.forEach(function (item) {
+      totalAmount += item.price;
+  });
+
+  // Obter o ID do usuário a partir do token
+  const userId = req.usuario.id;
+
+  // Cria um objeto JSON com as informações da compra
+  const purchaseDetails = {
+      totalAmount: totalAmount.toFixed(2),
+      items: cartItems
+  };
+
+  // Inserir detalhes da compra na tabela historico_compras
+  const inserirCompraQuery = 'INSERT INTO historico_compras (user_id, total_amount, details) VALUES (?, ?, ?)';
+  connection.query(inserirCompraQuery, [userId, purchaseDetails.totalAmount, JSON.stringify(purchaseDetails)], (err, resultado) => {
+      if (err) {
+          console.error('Erro ao inserir detalhes da compra:', err);
+          return res.status(500).json({ mensagem: 'Erro interno do servidor ao inserir detalhes da compra.', error: err.message });
+      }
+
+      // Limpar o carrinho após a compra
+      cartItems = [];
+      cartItemCount = 0;
+
+      res.json({ mensagem: 'Compra realizada com sucesso!', id: resultado.insertId });
+  });
+});
+
 
 app.get('/historico-compras', verificarToken, (req, res) => {
   const userId = req.usuario.id;
