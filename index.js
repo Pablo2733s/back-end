@@ -236,12 +236,26 @@ app.post('/alterar', verificarToken, (req, res) => {
   });
 });
 
+app.post('/comprar', (req, res) => {
+  const { userid, name_jogo, preco } = req.body;
+
+  // Verifica se todas as informações necessárias estão presentes
+  if (!userid || !name_jogo || !preco) {
+      return res.status(400).json({ error: 'Dados incompletos. Certifique-se de enviar userid, name_jogo e preco.' });
+  }
+
+  // Adiciona o item ao carrinho
+  carrinho.push({ userid, name_jogo, preco });
+
+  // Retorna uma resposta de sucesso
+  res.status(200).json({ success: true, message: 'Item adicionado ao carrinho com sucesso.' });
+});
 
 app.get('/historico-compras', verificarToken, (req, res) => {
   const userId = req.usuario.id;
 
   // Recuperar histórico de compras do usuário
-  const historicoComprasQuery = 'SELECT * FROM historico_compras WHERE user_id = ?';
+  const historicoComprasQuery = 'SELECT * FROM compras WHERE user_id = ?';
 
   connection.query(historicoComprasQuery, [userId], (err, resultados) => {
     if (err) {
