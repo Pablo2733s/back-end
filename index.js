@@ -265,19 +265,19 @@ app.post('/comprar', verificarToken, (req, res) => {
   });
 });
 
+app.get('/historico', verificarToken, (req, res) => {
+  // Obtém o userid do token verificado
+  const userid = req.usuario.id;
 
-app.get('/historico-compras', verificarToken, (req, res) => {
-  const userId = req.usuario.id;
+  // Busca as compras do usuário no banco de dados
+  const buscarComprasQuery = 'SELECT id, name_jogo, preco FROM compras WHERE userid = ?';
 
-  // Recuperar histórico de compras do usuário
-  const historicoComprasQuery = 'SELECT * FROM compras WHERE user_id = ?';
-
-  connection.query(historicoComprasQuery, [userId], (err, resultados) => {
+  connection.query(buscarComprasQuery, [userid], (err, resultados) => {
     if (err) {
-      console.error('Erro ao recuperar histórico de compras:', err);
-      return res.status(500).json({ mensagem: 'Erro interno do servidor ao recuperar histórico de compras.', error: err.message });
+      console.error('Erro ao buscar histórico de compras:', err);
+      return res.status(500).json({ mensagem: 'Erro interno do servidor ao buscar histórico de compras.', error: err.message });
     }
 
-    res.json({ mensagem: 'Histórico de compras recuperado com sucesso!', historicoCompras: resultados });
+    res.json({ mensagem: 'Histórico de compras recuperado com sucesso!', compras: resultados });
   });
 });
