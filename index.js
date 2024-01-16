@@ -251,6 +251,37 @@ app.post('/comprar', verificarToken, (req, res) => {
   });
 });
 
+app.get('/badges', verificarToken, (req, res) => {
+  const userid = req.usuario.id;
+
+  // Busca a quantidade de itens comprados pelo usuário
+  const contarItensCompradosQuery = 'SELECT COUNT(*) as totalItens FROM compras WHERE userid = ?';
+
+  connection.query(contarItensCompradosQuery, [userid], (err, resultados) => {
+    if (err) {
+      console.error('Erro ao contar itens comprados:', err);
+      return res.status(500).json({ mensagem: 'Erro interno do servidor ao contar itens comprados.', error: err.message });
+    }
+
+    const totalItens = resultados[0].totalItens;
+
+    // Lógica para atribuir desconto com base na quantidade de itens comprados
+    let desconto = 0;
+
+    if (totalItens >= 1 && totalItens < 3) {
+      desconto = 4;
+    } else if (totalItens >= 3 && totalItens < 5) {
+      desconto = 8;
+    } else if (totalItens >= 5 && totalItens <= 7) {
+      desconto = 9;
+    } else if (totalItens >= 8 && totalItens <= 10) {
+      desconto = 10;
+    }
+
+    res.json({ mensagem: 'Informações de desconto recuperadas com sucesso!', desconto });
+  });
+});
+
 app.get('/historico', verificarToken, (req, res) => {
   // Obtém o userid do token verificado
   const userid = req.usuario.id;
