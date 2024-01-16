@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 const dbConfig = {
   host: 'monorail.proxy.rlwy.net',
   user: 'root',
-  password: 'DED-EaaFH24H3b31Dcebacba2Df-BhEb',
+  password: '5g55DhaC6Gb5hb2bBG-eDA5HA24-3g4d',
   database: 'teste',
-  port: 50226
+  port: 36798
 };
 
 const connection = mysql.createConnection(dbConfig);
