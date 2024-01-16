@@ -236,20 +236,35 @@ app.post('/alterar', verificarToken, (req, res) => {
   });
 });
 
-app.post('/comprar', (req, res) => {
-  const { userid, name_jogo, preco } = req.body;
-
-  // Verifica se todas as informações necessárias estão presentes
-  if (!userid || !name_jogo || !preco) {
-      return res.status(400).json({ error: 'Dados incompletos. Certifique-se de enviar userid, name_jogo e preco.' });
+app.post('/comprar', verificarToken, (req, res) => {
+  // Verifica se o corpo da requisição contém as informações necessárias
+  if (!req.body.name_jogo || !req.body.preco) {
+    return res.status(400).json({ error: "Dados incompletos. Certifique-se de enviar name_jogo e preco." });
   }
 
-  // Adiciona o item ao carrinho
-  carrinho.push({ userid, name_jogo, preco });
+  // Obtém o userid do token verificado
+  const userid = req.usuario.id;
 
-  // Retorna uma resposta de sucesso
-  res.status(200).json({ success: true, message: 'Item adicionado ao carrinho com sucesso.' });
+  // Adiciona a compra à simulação do banco de dados
+  const novaCompra = {
+    userid: userid,
+    name_jogo: req.body.name_jogo,
+    preco: req.body.preco
+  };
+
+  // Simule a inserção no banco de dados
+  // Substitua isso pela lógica real de inserção no banco de dados
+  // Certifique-se de ter uma tabela "compras" no seu banco de dados
+  connection.query('INSERT INTO compras SET ?', novaCompra, (err, resultado) => {
+    if (err) {
+      console.error('Erro ao adicionar compra:', err);
+      return res.status(500).json({ mensagem: 'Erro interno do servidor ao adicionar compra.', error: err.message });
+    }
+
+    res.status(200).json({ mensagem: "Compra realizada com sucesso.", compra: novaCompra });
+  });
 });
+
 
 app.get('/historico-compras', verificarToken, (req, res) => {
   const userId = req.usuario.id;
