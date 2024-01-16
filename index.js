@@ -154,21 +154,6 @@ app.get('/buscarcoments', (req, res) => {
 
 
 
-app.post('/recuperar-senha', (req, res) => {
-  const { email } = req.body;
-
-  // Verifique se o e-mail foi fornecido
-  if (!email) {
-    return res.status(400).json({ mensagem: 'Informe o e-mail para recuperar a senha.' });
-  }
-
-  // Lógica para gerar um token de redefinição de senha e enviá-lo ao usuário
-  // Neste exemplo, apenas retornamos um sucesso simulado
-  res.json({ mensagem: 'Instruções de recuperação de senha enviadas para o seu e-mail.' });
-});
-
-
-
 // Exemplo de rota protegida
 app.get('/rota-protegida', verificarToken, (req, res) => {
   res.json({ mensagem: 'Rota protegida alcançada!', usuario: req.usuario });
@@ -178,7 +163,7 @@ app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
 });
 
-app.put('/editar-conta', verificarToken, (req, res) => {
+app.post('/editar-conta', verificarToken, (req, res) => {
   const userId = req.usuario.id;
   const { nome, email, senha } = req.body;
 
@@ -194,6 +179,7 @@ app.put('/editar-conta', verificarToken, (req, res) => {
     res.json({ mensagem: 'Informações da conta atualizadas com sucesso!' });
   });
 });
+
 
 app.post('/alterar', verificarToken, (req, res) => {
   const { senhaAtual, novaSenha } = req.body;
